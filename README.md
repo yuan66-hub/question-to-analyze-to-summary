@@ -33,13 +33,14 @@
 
 ## 3. AI 代码生成与质量
 
-| 文档                                                                               | 说明                     |
-| ---------------------------------------------------------------------------------- | ------------------------ |
-| [complex-business-ai-codegen-quality.md](./complex-business-ai-codegen-quality.md) | 复杂业务 AI 代码生成质量 |
-| [ai-codegen-logic-errors-analysis.md](./ai-codegen-logic-errors-analysis.md)       | AI 代码逻辑错误分析      |
-| [ai-code-diff-control.md](./ai-code-diff-control.md)                               | AI 代码差异控制          |
-| [ai-code-quality-evaluation.md](./ai-code-quality-evaluation.md)                   | AI 代码质量评估          |
-| [ui-deviation-detection.md](./ui-deviation-detection.md)                           | UI 偏差检测              |
+| 文档                                                                                            | 说明                     |
+| ----------------------------------------------------------------------------------------------- | ------------------------ |
+| [complex-business-ai-codegen-quality.md](./3.ai-codegen/complex-business-ai-codegen-quality.md) | 复杂业务 AI 代码生成质量 |
+| [ai-codegen-logic-errors-analysis.md](./3.ai-codegen/ai-codegen-logic-errors-analysis.md)       | AI 代码逻辑错误分析      |
+| [ai-code-diff-control.md](./3.ai-codegen/ai-code-diff-control.md)                               | AI 代码差异控制          |
+| [ai-code-quality-evaluation.md](./3.ai-codegen/ai-code-quality-evaluation.md)                   | AI 代码质量评估          |
+| [ai-content-production-denoising.md](./3.ai-codegen/ai-content-production-denoising.md)         | AI 辅助内容生产去噪规范  |
+| [ui-deviation-detection.md](./3.ai-codegen/ui-deviation-detection.md)                           | UI 偏差检测              |
 
 ## 4. 需求追踪与任务分解
 
@@ -51,11 +52,11 @@
 
 ## 5. 前端开发
 
-| 文档                                                                                 | 说明                              |
-| ------------------------------------------------------------------------------------ | --------------------------------- |
-| [client-side-ai-frontend-applications.md](./client-side-ai-frontend-applications.md) | 客户端 AI 前端应用                |
-| [react-context-vs-zustand.md](./react-context-vs-zustand.md)                         | React Context vs Zustand 深度对比 |
-| [react-state-update-debugging.md](./react-state-update-debugging.md)                 | React 状态更新调试                |
+| 文档                                                                                    | 说明                                  |
+| --------------------------------------------------------------------------------------- | ------------------------------------- |
+| [client-side-ai-frontend-applications.md](./client-side-ai-frontend-applications.md)    | 客户端 AI 前端应用                    |
+| [react-context-vs-zustand.md](./react-context-vs-zustand.md)                            | React Context vs Zustand 深度对比     |
+| [react-state-update-debugging.md](./react-state-update-debugging.md)                    | React 状态更新调试                    |
 | [vue3-reactivity-vs-alien-signals.md](./5.frontend/vue3-reactivity-vs-alien-signals.md) | Vue 3 响应式系统与 Alien Signals 对比 |
 
 ## 6. Node.js 与后端
@@ -66,9 +67,9 @@
 
 ## 7. LLM 应用
 
-| 文档                                                                                               | 说明                                                                          |
-| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [prompt-vs-context-vs-harness-engineering.md](./7.llm/prompt-vs-context-vs-harness-engineering.md) | Prompt Engineering、Context Engineering 与 Harness Engineering 的工程实践区别 |
-| [llm-spelling-correction.md](./7.llm/llm-spelling-correction.md)                                   | LLM 拼写纠正                                                                  |
-| [ai-native-applications.md](./7.llm/ai-native-applications.md)                                     | AI 原生应用：定义、判断标准、典型架构与案例拆解                              |
-| [ai-observability-agent-gateway-governance.md](./7.llm/ai-observability-agent-gateway-governance.md) | AI 服务网关治理、日志追踪、Agent 状态轨迹与用户行为复现的完整手册            |
+| 文档                                                                                                 | 说明                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [prompt-vs-context-vs-harness-engineering.md](./7.llm/prompt-vs-context-vs-harness-engineering.md)   | Prompt Engineering、Context Engineering 与 Harness Engineering 的工程实践区别 |
+| [llm-spelling-correction.md](./7.llm/llm-spelling-correction.md)                                     | LLM 拼写纠正                                                                  |
+| [ai-native-applications.md](./7.llm/ai-native-applications.md)                                       | AI 原生应用：定义、判断标准、典型架构与案例拆解                               |
+| [ai-observability-agent-gateway-governance.md](./7.llm/ai-observability-agent-gateway-governance.md) | AI 服务网关治理、日志追踪、Agent 状态轨迹与用户行为复现的完整手册             |
