@@ -56,6 +56,7 @@
 | [client-side-ai-frontend-applications.md](./client-side-ai-frontend-applications.md) | 客户端 AI 前端应用                |
 | [react-context-vs-zustand.md](./react-context-vs-zustand.md)                         | React Context vs Zustand 深度对比 |
 | [react-state-update-debugging.md](./react-state-update-debugging.md)                 | React 状态更新调试                |
+| [vue3-reactivity-vs-alien-signals.md](./5.frontend/vue3-reactivity-vs-alien-signals.md) | Vue 3 响应式系统与 Alien Signals 对比 |
 
 ## 6. Node.js 与后端
 
