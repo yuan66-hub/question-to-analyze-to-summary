@@ -71,3 +71,4 @@
 | [prompt-vs-context-vs-harness-engineering.md](./7.llm/prompt-vs-context-vs-harness-engineering.md) | Prompt Engineering、Context Engineering 与 Harness Engineering 的工程实践区别 |
 | [llm-spelling-correction.md](./7.llm/llm-spelling-correction.md)                                   | LLM 拼写纠正                                                                  |
 | [ai-native-applications.md](./7.llm/ai-native-applications.md)                                     | AI 原生应用：定义、判断标准、典型架构与案例拆解                              |
+| [ai-observability-agent-gateway-governance.md](./7.llm/ai-observability-agent-gateway-governance.md) | AI 服务网关治理、日志追踪、Agent 状态轨迹与用户行为复现的完整手册            |
