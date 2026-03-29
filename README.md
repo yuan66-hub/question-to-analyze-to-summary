@@ -69,3 +69,4 @@
 | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | [prompt-vs-context-vs-harness-engineering.md](./7.llm/prompt-vs-context-vs-harness-engineering.md) | Prompt Engineering、Context Engineering 与 Harness Engineering 的工程实践区别 |
 | [llm-spelling-correction.md](./7.llm/llm-spelling-correction.md)                                   | LLM 拼写纠正                                                                  |
+| [ai-native-applications.md](./7.llm/ai-native-applications.md)                                     | AI 原生应用：定义、判断标准、典型架构与案例拆解                              |
