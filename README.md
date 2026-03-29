@@ -57,6 +57,7 @@
 | [client-side-ai-frontend-applications.md](./5.frontend/client-side-ai-frontend-applications.md) | 客户端 AI 前端应用                    |
 | [react-context-vs-zustand.md](./5.frontend/react-context-vs-zustand.md)                         | React Context vs Zustand 深度对比     |
 | [react-state-update-debugging.md](./5.frontend/react-state-update-debugging.md)                 | React 状态更新调试                    |
+| [service-worker-web-worker-iframe.md](./5.frontend/service-worker-web-worker-iframe.md)         | Service Worker、Web Worker 与 iframe 总结 |
 | [vue3-reactivity-vs-alien-signals.md](/5.frontend/vue3-reactivity-vs-alien-signals.md)          | Vue 3 响应式系统与 Alien Signals 对比 |
 
 ## 6. Node.js 与后端
