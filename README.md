@@ -54,11 +54,13 @@
 
 | 文档                                                                                            | 说明                                  |
 | ----------------------------------------------------------------------------------------------- | ------------------------------------- |
-| [client-side-ai-frontend-applications.md](./5.frontend/client-side-ai-frontend-applications.md) | 客户端 AI 前端应用                    |
+| [client-side-ai-webllm-applications.md](./5.frontend/client-side-ai-webllm-applications.md) | 端侧 AI 模型（WebLLM）前端应用场景    |
+| [react-streaming-rendering-optimization.md](./5.frontend/react-streaming-rendering-optimization.md) | React 流式输出渲染优化                |
 | [react-context-vs-zustand.md](./5.frontend/react-context-vs-zustand.md)                         | React Context vs Zustand 深度对比     |
 | [react-state-update-debugging.md](./5.frontend/react-state-update-debugging.md)                 | React 状态更新调试                    |
 | [service-worker-web-worker-iframe.md](./5.frontend/service-worker-web-worker-iframe.md)         | Service Worker、Web Worker 与 iframe 总结 |
 | [vue3-reactivity-vs-alien-signals.md](/5.frontend/vue3-reactivity-vs-alien-signals.md)          | Vue 3 响应式系统与 Alien Signals 对比 |
+| [frontend-algorithm-scenes.md](./5.frontend/frontend-algorithm-scenes.md)                       | 前端算法应用场景详解                  |
 
 ## 6. Node.js 与后端
 
