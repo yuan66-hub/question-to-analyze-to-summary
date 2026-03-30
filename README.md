@@ -63,6 +63,7 @@
 | [frontend-algorithm-scenes.md](./5.frontend/frontend-algorithm-scenes.md)                       | 前端算法应用场景详解                  |
 | [react-state-update.md](./5.frontend/react-state-update.md)                                     | React 状态更新后获取最新值的方案      |
 | [react-usecallback-usememo.md](./5.frontend/react-usecallback-usememo.md)                       | useCallback 与 useMemo 原理、场景、性能开销与常见错误 |
+| [network-performance-optimization.md](./5.frontend/network-performance-optimization.md)         | 前端网络层面性能优化：协议升级、连接优化、缓存策略、资源加载控制 |
 
 ## 6. Node.js 与后端
 
