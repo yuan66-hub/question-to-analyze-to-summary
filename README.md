@@ -61,6 +61,7 @@
 | [service-worker-web-worker-iframe.md](./5.frontend/service-worker-web-worker-iframe.md)         | Service Worker、Web Worker 与 iframe 总结 |
 | [vue3-reactivity-vs-alien-signals.md](/5.frontend/vue3-reactivity-vs-alien-signals.md)          | Vue 3 响应式系统与 Alien Signals 对比 |
 | [frontend-algorithm-scenes.md](./5.frontend/frontend-algorithm-scenes.md)                       | 前端算法应用场景详解                  |
+| [react-state-update.md](./5.frontend/react-state-update.md)                                     | React 状态更新后获取最新值的方案      |
 
 ## 6. Node.js 与后端
 
