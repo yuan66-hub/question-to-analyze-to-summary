@@ -553,7 +553,120 @@ CrewAI Hierarchical 仲裁流程：
 
 ---
 
-## 六、参考资源
+## 六、断路器模式（Circuit Breaker）
+
+当某个 Agent 连续失败时，断路器自动切断对该 Agent 的调用，防止级联失败。
+
+```python
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+
+class CircuitState(Enum):
+    CLOSED = "closed"     # 正常，允许调用
+    OPEN = "open"         # 断路，拒绝调用
+    HALF_OPEN = "half_open"  # 试探，允许少量调用
+
+@dataclass
+class AgentCircuitBreaker:
+    agent_id: str
+    failure_threshold: int = 3       # 连续失败次数阈值
+    recovery_timeout: int = 60       # 断路后恢复尝试间隔（秒）
+    state: CircuitState = CircuitState.CLOSED
+    failure_count: int = 0
+    last_failure_time: datetime = None
+    fallback_agent_id: str = None    # 备用 Agent
+
+    def call(self, agent_fn, *args, **kwargs):
+        """通过断路器调用 Agent"""
+        if self.state == CircuitState.OPEN:
+            # 检查是否达到恢复时间
+            if datetime.now() - self.last_failure_time > timedelta(seconds=self.recovery_timeout):
+                self.state = CircuitState.HALF_OPEN
+            else:
+                # 断路中，调用备用 Agent
+                if self.fallback_agent_id:
+                    return self._call_fallback(*args, **kwargs)
+                raise Exception(f"Agent {self.agent_id} 断路中，暂不可用")
+
+        try:
+            result = agent_fn(*args, **kwargs)
+            self._on_success()
+            return result
+        except Exception as e:
+            self._on_failure()
+            raise
+
+    def _on_success(self):
+        self.failure_count = 0
+        self.state = CircuitState.CLOSED
+
+    def _on_failure(self):
+        self.failure_count += 1
+        self.last_failure_time = datetime.now()
+        if self.failure_count >= self.failure_threshold:
+            self.state = CircuitState.OPEN
+            print(f"⚡ Agent {self.agent_id} 断路器打开（连续失败 {self.failure_count} 次）")
+
+# 在 LangGraph 中使用断路器
+circuit_breakers = {
+    "coder": AgentCircuitBreaker("coder", fallback_agent_id="backup_coder"),
+    "designer": AgentCircuitBreaker("designer"),
+}
+
+def resilient_coder_node(state: AgentState) -> AgentState:
+    breaker = circuit_breakers["coder"]
+    try:
+        result = breaker.call(original_coder_fn, state)
+        return result
+    except Exception as e:
+        return {**state, "error": str(e), "current_agent": "supervisor"}
+```
+
+---
+
+## 七、仲裁可观测性
+
+### 关键监控指标
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+
+tracer = trace.get_tracer("multi_agent_arbitration")
+
+def monitored_arbitration(state: AgentState) -> AgentState:
+    """带 OpenTelemetry 追踪的仲裁节点"""
+    with tracer.start_as_current_span("arbitration") as span:
+        span.set_attribute("agent.conflicts_count", len(state.get("conflicts", [])))
+        span.set_attribute("agent.round", state.get("round", 0))
+
+        # 记录冲突详情
+        for i, conflict in enumerate(state.get("conflicts", [])):
+            span.add_event(f"conflict_{i}", {
+                "type": conflict.get("type"),
+                "severity": conflict.get("severity"),
+            })
+
+        result = supervisor_node(state)
+
+        span.set_attribute("arbitration.resolved", len(result.get("conflicts", [])) == 0)
+        span.set_attribute("arbitration.resolution", result.get("resolution", "none"))
+
+        return result
+```
+
+### 仲裁性能对比数据参考
+
+| 框架 | 仲裁延迟 | 成功率 | 适用规模 |
+|------|---------|--------|---------|
+| LangGraph | 低（条件边无额外 LLM 调用） | 高（确定性路由） | 中大型 |
+| AutoGen | 中（GroupChatManager 有 LLM 判断） | 中（依赖 LLM 理解发言） | 中型 |
+| CrewAI | 中（Manager 裁决需要 LLM） | 高（Hierarchical 结构清晰） | 小中型 |
+
+---
+
+## 八、参考资源
 
 - [LangGraph 文档](https://langchain-ai.github.io/langgraph/) — Multi-agent patterns and state management
 - [AutoGen 框架](https://microsoft.github.io/autogen/) — GroupChat and conversational patterns

@@ -263,3 +263,212 @@ find . -name "*.py" -exec wc -l {} + | sort -rn | head
 | 忽略文档先看代码 | 效率低下、难以理解设计意图 |
 | 只看当前文件 | 缺乏全局视野、容易局部优化 |
 | 依赖代码注释理解 | 注释可能过时、不准确 |
+
+---
+
+## CODEMAP.md 完整模板
+
+```markdown
+# CODEMAP — [项目名称]
+
+> 最后更新：{{date}}
+> 代码行数：{{loc}}
+> 主要语言：{{languages}}
+
+---
+
+## 项目全景
+
+### 技术栈
+
+| 层次 | 技术 | 版本 |
+|------|------|------|
+| 前端 | React / Next.js | 18 / 14 |
+| 后端 | Node.js / NestJS | 20 / 10 |
+| 数据库 | PostgreSQL + Redis | 15 / 7 |
+| 消息队列 | RabbitMQ | 3.12 |
+| 部署 | K8s + Helm | - |
+
+### 目录结构（关键路径）
+
+```
+src/
+├── modules/           # 业务模块（按领域划分）
+│   ├── auth/         # 认证授权
+│   ├── user/         # 用户管理
+│   ├── order/        # 订单处理
+│   └── payment/      # 支付
+├── shared/            # 公共模块
+│   ├── database/     # 数据库连接、Repository 基类
+│   ├── cache/        # Redis 缓存封装
+│   └── events/       # 事件总线
+├── config/            # 配置文件
+└── main.ts            # 应用入口
+```
+
+---
+
+## 模块索引
+
+### auth 模块
+
+**职责**：JWT 认证、OAuth 第三方登录、权限校验
+
+**入口文件**：`src/modules/auth/auth.module.ts`
+
+**核心方法**：
+- `AuthService.login(dto)` — 用户名密码登录，返回 JWT
+- `AuthService.refreshToken(token)` — 刷新 AccessToken
+- `JwtGuard.canActivate()` — 路由守卫，验证请求 Token
+
+**关键依赖**：
+- `UserModule` — 查询用户信息
+- `CacheModule` — 存储 RefreshToken 黑名单
+
+**业务规则**：
+- AccessToken 有效期 15 分钟
+- RefreshToken 有效期 7 天，单设备限制
+- 连续失败 5 次锁定账户 30 分钟
+
+---
+
+### order 模块
+
+**职责**：订单生命周期管理（创建→支付→发货→完成→退款）
+
+**状态机**：
+```
+PENDING → PAID → SHIPPED → DELIVERED → COMPLETED
+   ↓         ↓       ↓          ↓
+CANCELLED  REFUNDING REFUNDING  REFUNDED
+```
+
+**核心方法**：
+- `OrderService.create(dto, userId)` — 创建订单，含库存预占
+- `OrderService.pay(orderId)` — 触发支付流程
+- `OrderEventHandler.onPaymentSuccess()` — 支付成功事件处理
+
+**关键依赖**：
+- `InventoryModule` — 库存扣减（分布式事务）
+- `PaymentModule` — 支付网关调用
+- `NotificationModule` — 订单状态推送
+
+---
+
+## 核心业务流程
+
+### 下单流程
+
+```
+用户提交 → 参数校验 → 库存预占 → 创建订单 → 发起支付
+    ↓                              ↓           ↓
+  校验失败                     超时取消     支付成功/失败
+                                  ↓              ↓
+                             释放库存         扣减库存
+```
+
+---
+
+## 数据模型关系
+
+```
+User (1) ──── (N) Order
+Order (1) ──── (N) OrderItem
+OrderItem (N) ──── (1) Product
+Order (1) ──── (1) Payment
+```
+
+---
+
+## 对外接口清单
+
+| 接口 | 方法 | 路径 | 认证 | 限流 |
+|------|------|------|------|------|
+| 登录 | POST | /auth/login | 否 | 10次/分钟 |
+| 创建订单 | POST | /orders | 是 | 5次/分钟 |
+| 查询订单 | GET | /orders/:id | 是 | 100次/分钟 |
+
+---
+
+## 常见问题排查索引
+
+| 问题现象 | 排查入口 |
+|---------|---------|
+| 登录失败 | `AuthService.login` → `UserRepository.findByUsername` |
+| 订单不更新 | `OrderEventHandler` → RabbitMQ 消费者日志 |
+| 支付回调未处理 | `PaymentController.webhook` → 幂等性检查 |
+```
+
+---
+
+## pre-commit 自动更新 CODEMAP
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit 或 .husky/pre-commit
+
+set -e
+
+echo "📖 更新 CODEMAP.md..."
+
+# 统计代码行数
+LOC=$(find src -name "*.ts" | xargs wc -l | tail -1 | awk '{print $1}')
+
+# 更新日期
+DATE=$(date '+%Y-%m-%d')
+
+# 自动更新 CODEMAP 头部信息
+sed -i "s/> 最后更新：.*/> 最后更新：$DATE/" CODEMAP.md
+sed -i "s/> 代码行数：.*/> 代码行数：$LOC/" CODEMAP.md
+
+# 如果 CODEMAP.md 有修改，加入本次提交
+if git diff --name-only | grep -q "CODEMAP.md"; then
+    git add CODEMAP.md
+    echo "✅ CODEMAP.md 已更新并加入本次提交"
+fi
+```
+
+配置 Husky：
+
+```json
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "bash .husky/update-codemap.sh && lint-staged"
+    }
+  }
+}
+```
+
+---
+
+## MCP 工具 Prompt 示例
+
+当使用 Claude Code 或支持 MCP 的 IDE 时，可以配置以下 Prompt 让 AI 优先读取 CODEMAP：
+
+```markdown
+# 项目理解规则
+
+## 加载顺序
+
+在回答任何代码问题前，请按以下顺序加载上下文：
+
+1. 首先读取 `CODEMAP.md` 建立全局感知
+2. 根据问题定位相关模块的 `README.md` 或 `SUMMARY.md`
+3. 仅在确实需要时读取具体实现文件
+
+## 禁止行为
+
+- 不要在未读 CODEMAP 前就尝试搜索实现代码
+- 不要一次性读取超过 3 个完整实现文件
+- 如果问题涉及跨模块交互，先理解模块边界再看实现
+
+## 问题类型与加载策略
+
+| 问题类型 | 应读取的层级 |
+|---------|------------|
+| "这个项目是做什么的" | 只需 CODEMAP.md |
+| "某功能在哪里实现" | CODEMAP + 模块 README |
+| "某函数有 bug" | CODEMAP + 函数实现 + 相关测试 |
+```

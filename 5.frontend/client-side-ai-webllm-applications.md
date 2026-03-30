@@ -158,6 +158,259 @@
 
 ---
 
+## 代码示例
+
+### WebGPU 特性检测
+
+```typescript
+async function checkWebGPUSupport(): Promise<{
+  supported: boolean;
+  reason?: string;
+  adapterInfo?: GPUAdapterInfo;
+}> {
+  if (!navigator.gpu) {
+    return { supported: false, reason: '浏览器不支持 WebGPU API' };
+  }
+
+  const adapter = await navigator.gpu.requestAdapter({
+    powerPreference: 'high-performance', // 优先使用独显
+  });
+
+  if (!adapter) {
+    return { supported: false, reason: '未找到兼容的 GPU 适配器（可能是集显或驱动不兼容）' };
+  }
+
+  const adapterInfo = await adapter.requestAdapterInfo();
+  const device = await adapter.requestDevice();
+
+  // 检查关键特性
+  const features = {
+    float16: adapter.features.has('shader-f16'),
+    timestamp: adapter.features.has('timestamp-query'),
+    maxBufferSize: adapter.limits.maxBufferSize,
+  };
+
+  device.destroy(); // 检测完毕，释放设备
+
+  return {
+    supported: true,
+    adapterInfo,
+    features,
+  };
+}
+
+// 使用
+const gpuStatus = await checkWebGPUSupport();
+if (!gpuStatus.supported) {
+  console.warn('WebGPU 不可用，降级到 WebAssembly 推理');
+}
+```
+
+### WebLLM 初始化与流式推理
+
+```typescript
+import * as webllm from '@mlc-ai/web-llm';
+
+class WebLLMManager {
+  private engine: webllm.MLCEngine | null = null;
+  private modelId = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
+
+  async initialize(onProgress?: (progress: webllm.InitProgressReport) => void) {
+    // 检查 WebGPU 支持
+    const gpuStatus = await checkWebGPUSupport();
+    if (!gpuStatus.supported) {
+      throw new Error(`WebGPU 不可用: ${gpuStatus.reason}`);
+    }
+
+    this.engine = await webllm.CreateMLCEngine(this.modelId, {
+      initProgressCallback: (progress) => {
+        // progress.text: "Loading model weights..."
+        // progress.progress: 0-1
+        onProgress?.(progress);
+      },
+      // 缓存模型到 IndexedDB，避免重复下载
+      appConfig: {
+        model_list: [{
+          model: this.modelId,
+          model_id: this.modelId,
+          model_lib: webllm.modelLibURLPrefix + webllm.modelVersion + '/Llama-3.2-3B-Instruct-q4f16_1-webgpu.wasm',
+        }],
+      },
+    });
+  }
+
+  async *streamChat(message: string, systemPrompt?: string): AsyncGenerator<string> {
+    if (!this.engine) throw new Error('模型未初始化');
+
+    const messages: webllm.ChatCompletionMessageParam[] = [
+      ...(systemPrompt ? [{ role: 'system' as const, content: systemPrompt }] : []),
+      { role: 'user', content: message },
+    ];
+
+    const stream = await this.engine.chat.completions.create({
+      messages,
+      stream: true,
+      temperature: 0.7,
+      max_tokens: 1024,
+    });
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content;
+      if (delta) yield delta;
+    }
+  }
+
+  // 检查模型是否已缓存（避免重复下载）
+  async isModelCached(): Promise<boolean> {
+    const cacheStorage = await caches.open('webllm-models');
+    const cachedKeys = await cacheStorage.keys();
+    return cachedKeys.some(req => req.url.includes(this.modelId));
+  }
+}
+```
+
+### React 集成示例（含加载进度 UX）
+
+```tsx
+import React, { useState, useCallback, useRef } from 'react';
+
+function WebLLMChat() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingText, setLoadingText] = useState('');
+  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+  const [input, setInput] = useState('');
+  const [streaming, setStreaming] = useState(false);
+  const managerRef = useRef<WebLLMManager | null>(null);
+
+  const handleLoad = useCallback(async () => {
+    setStatus('loading');
+    managerRef.current = new WebLLMManager();
+
+    try {
+      await managerRef.current.initialize((progress) => {
+        setLoadingProgress(Math.round(progress.progress * 100));
+        setLoadingText(progress.text);
+      });
+      setStatus('ready');
+    } catch (err) {
+      setStatus('error');
+      console.error(err);
+    }
+  }, []);
+
+  const handleSend = useCallback(async () => {
+    if (!managerRef.current || !input.trim()) return;
+
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setStreaming(true);
+
+    // 添加空的助手消息，逐步填充
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+    try {
+      for await (const token of managerRef.current.streamChat(userMsg)) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: 'assistant',
+            content: updated[updated.length - 1].content + token,
+          };
+          return updated;
+        });
+      }
+    } finally {
+      setStreaming(false);
+    }
+  }, [input]);
+
+  // 模型加载进度 UI
+  if (status === 'loading') {
+    return (
+      <div className="loading-container">
+        <div className="progress-bar" style={{ width: `${loadingProgress}%` }} />
+        <p>{loadingText}</p>
+        <p>{loadingProgress}% — 首次加载约需 1-3 分钟，之后从缓存加载</p>
+      </div>
+    );
+  }
+
+  if (status === 'idle') {
+    return (
+      <button onClick={handleLoad}>
+        加载本地 AI 模型（约 2GB，下载后缓存到浏览器）
+      </button>
+    );
+  }
+
+  return (
+    <div>
+      <div className="messages">
+        {messages.map((msg, i) => (
+          <div key={i} className={`message ${msg.role}`}>
+            {msg.content}
+            {streaming && i === messages.length - 1 && <span className="cursor">▊</span>}
+          </div>
+        ))}
+      </div>
+      <input
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && !streaming && handleSend()}
+        disabled={streaming}
+        placeholder="输入消息（在浏览器本地运行，数据不上传）"
+      />
+      <button onClick={handleSend} disabled={streaming}>发送</button>
+    </div>
+  );
+}
+```
+
+### PWA 结合离线能力
+
+```javascript
+// service-worker.js — 预缓存模型文件
+const MODEL_CACHE = 'webllm-models-v1';
+const MODEL_FILES = [
+  // 模型权重文件（通常是多个 shard）
+  '/models/Llama-3.2-3B-Instruct/params_shard_0.bin',
+  '/models/Llama-3.2-3B-Instruct/params_shard_1.bin',
+  '/models/Llama-3.2-3B-Instruct/tokenizer.json',
+  '/models/Llama-3.2-3B-Instruct/ndarray-cache.json',
+];
+
+self.addEventListener('install', (event) => {
+  // 不预缓存模型（太大），只缓存 App Shell
+  event.waitUntil(
+    caches.open('app-shell-v1').then(cache =>
+      cache.addAll(['/index.html', '/app.js', '/app.css'])
+    )
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // 模型文件：缓存优先策略
+  if (url.pathname.startsWith('/models/')) {
+    event.respondWith(
+      caches.open(MODEL_CACHE).then(async (cache) => {
+        const cached = await cache.match(event.request);
+        if (cached) return cached;
+
+        const response = await fetch(event.request);
+        cache.put(event.request, response.clone()); // 异步缓存
+        return response;
+      })
+    );
+  }
+});
+```
+
+---
+
 ## 参考资源
 
 - [WebLLM 官网](https://webllm.mlc.ai/)

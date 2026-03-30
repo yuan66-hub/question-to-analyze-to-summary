@@ -127,12 +127,207 @@ AI 生成代码 → 质量评估 → 识别冗余 → 清理 → 反馈规则优
 
 ---
 
+## 六、SAST 安全静态分析集成
+
+### Semgrep 集成（推荐）
+
+```yaml
+# .github/workflows/sast.yml
+name: SAST 安全扫描
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Semgrep 扫描
+        run: |
+          semgrep ci \
+            --config=p/security-audit \
+            --config=p/owasp-top-ten \
+            --config=p/javascript \
+            --config=p/typescript \
+            --json-output=semgrep-results.json \
+            --severity=ERROR \
+            --severity=WARNING
+
+      - name: 上传扫描结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.json
+
+      - name: 评论 PR
+        if: github.event_name == 'pull_request'
+        run: |
+          # 解析 semgrep-results.json 并生成摘要
+          ERRORS=$(cat semgrep-results.json | jq '.results | length')
+          echo "发现 $ERRORS 个安全问题"
+```
+
+### 自定义规则示例
+
+```yaml
+# .semgrep/ai-codegen-rules.yml
+rules:
+  - id: no-sql-injection-template-literal
+    pattern: |
+      const query = `SELECT * FROM ... WHERE ... ${...}`;
+    message: "潜在 SQL 注入：不要将变量直接插入 SQL 字符串"
+    languages: [javascript, typescript]
+    severity: ERROR
+
+  - id: no-hardcoded-secrets
+    patterns:
+      - pattern: |
+          const $API_KEY = "sk-..."
+      - pattern: |
+          const $PASSWORD = "..."
+    message: "不要在代码中硬编码密钥或密码"
+    languages: [javascript, typescript]
+    severity: ERROR
+
+  - id: jwt-algorithm-none
+    pattern: jwt.verify($TOKEN, $SECRET, { algorithms: ["none"] })
+    message: "JWT 不应使用 none 算法"
+    languages: [javascript, typescript]
+    severity: ERROR
+```
+
+### CodeQL 集成（GitHub 原生）
+
+```yaml
+# .github/workflows/codeql.yml
+name: CodeQL 分析
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        language: [javascript, typescript]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 初始化 CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended  # 包含更多安全规则
+
+      - name: 自动构建
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 执行 CodeQL 分析
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+```
+
+---
+
+## 七、完整 CI/CD 质量门禁
+
+```yaml
+# .github/workflows/ai-code-quality.yml
+name: AI 代码质量门禁
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    labels: [ai-generated]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      # 1. ESLint 代码规范
+      - name: ESLint
+        run: npx eslint src/ --max-warnings=10 --format=json > eslint-results.json || true
+
+      # 2. 重复代码检测
+      - name: 重复代码检测 (jscpd)
+        run: |
+          npx jscpd src/ \
+            --min-lines=10 \
+            --threshold=5 \
+            --reporters=json \
+            --output=./reports/jscpd/
+          # 重复率超 5% 则失败
+          CLONE_PERCENTAGE=$(cat reports/jscpd/jscpd-report.json | jq '.statistics.total.percentage')
+          echo "重复率: $CLONE_PERCENTAGE%"
+          [ $(echo "$CLONE_PERCENTAGE > 5" | bc) -eq 1 ] && exit 1 || true
+
+      # 3. 圈复杂度
+      - name: 圈复杂度检查
+        run: |
+          npx complexity-report src/ --format=json > complexity.json
+          # 平均复杂度 > 10 则警告
+          AVG_COMPLEXITY=$(cat complexity.json | jq '.averageCyclomatic')
+          echo "平均圈复杂度: $AVG_COMPLEXITY"
+
+      # 4. 测试覆盖率
+      - name: 单元测试 + 覆盖率
+        run: |
+          npx jest --coverage --coverageThreshold='{"global":{"lines":70}}'
+
+      # 5. TypeScript 类型检查
+      - name: TypeScript 类型检查
+        run: npx tsc --noEmit
+
+      # 6. SAST（Semgrep）
+      - name: Semgrep 安全扫描
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/owasp-top-ten
+          auditOn: push
+
+      # 7. 汇总报告
+      - name: 生成质量报告
+        if: always()
+        run: |
+          echo "## AI 代码质量报告" >> $GITHUB_STEP_SUMMARY
+          echo "| 检查项 | 状态 |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ESLint | $([ -f eslint-results.json ] && echo '✅' || echo '❌') |" >> $GITHUB_STEP_SUMMARY
+```
+
+---
+
 ## 附录：参考工具链
 
 | 类别 | 工具 | 适用语言 |
 |------|------|---------|
 | 静态分析 | ESLint, SonarQube, CodeClimate | JS/TS, Java, Python |
-| 重复检测 | PMD CPD, Simian, Checkstyle | 多语言 |
-| 复杂度 | SonarQube, lizard | 多语言 |
+| 安全扫描 | Semgrep, CodeQL, Snyk | 多语言 |
+| 重复检测 | PMD CPD, jscpd, Simian | 多语言 |
+| 复杂度 | SonarQube, lizard, complexity-report | 多语言 |
 | 依赖分析 | dependency-cruiser, madge | JS/TS |
 | 测试覆盖 | Jest, pytest, JUnit | 多语言 |

@@ -550,3 +550,83 @@ PRD ──→ Design ──→ 代码 ──→ 测试 ──→ 发布
 | **最佳实践** | 明确标准、关注高风险、持续优化 |
 
 **核心原则：** AI 自检是增强人工审查的工具，而非替代人工的手段。保持人工在关键节点的判断权，是避免需求丢失的根本保障。
+
+---
+
+## AI 自检的 Token 成本估算
+
+### 为什么要估算成本
+
+自检 Agent 会产生额外 LLM 调用，需要在质量与成本之间找到平衡。
+
+### Token 用量估算
+
+```python
+def estimate_self_check_cost(
+    prd_tokens: int,
+    design_tokens: int,
+    model: str = "gpt-4o"
+) -> dict:
+    """估算 AI 自检的 Token 成本"""
+
+    # 价格参考（2025年，实际价格以官方为准）
+    PRICE_PER_1K_INPUT = {
+        "gpt-4o": 0.0025,        # $2.5/1M tokens
+        "gpt-4o-mini": 0.00015,  # $0.15/1M tokens
+        "claude-sonnet-4-6": 0.003,
+    }
+    PRICE_PER_1K_OUTPUT = {
+        "gpt-4o": 0.01,
+        "gpt-4o-mini": 0.0006,
+        "claude-sonnet-4-6": 0.015,
+    }
+
+    # 自检调用结构（覆盖度检查 + 一致性检查 + 完整性检查）
+    checks = [
+        {
+            "name": "覆盖度检查",
+            "input_tokens": prd_tokens + design_tokens + 500,  # +500 系统提示
+            "output_tokens": 800,  # 报告约 600-1000 tokens
+        },
+        {
+            "name": "一致性检查",
+            "input_tokens": design_tokens + 300,
+            "output_tokens": 500,
+        },
+        {
+            "name": "完整性检查",
+            "input_tokens": design_tokens + 400,
+            "output_tokens": 600,
+        },
+    ]
+
+    total_input = sum(c["input_tokens"] for c in checks)
+    total_output = sum(c["output_tokens"] for c in checks)
+
+    input_cost = (total_input / 1000) * PRICE_PER_1K_INPUT[model]
+    output_cost = (total_output / 1000) * PRICE_PER_1K_OUTPUT[model]
+    total_cost = input_cost + output_cost
+
+    return {
+        "model": model,
+        "total_input_tokens": total_input,
+        "total_output_tokens": total_output,
+        "input_cost_usd": round(input_cost, 4),
+        "output_cost_usd": round(output_cost, 4),
+        "total_cost_usd": round(total_cost, 4),
+        "checks": checks,
+    }
+
+# 示例：PRD 2000 tokens，Design 3000 tokens
+cost = estimate_self_check_cost(2000, 3000, "gpt-4o-mini")
+# 输出大约：total_cost_usd: 0.0012（约 0.001 美元，极低成本）
+```
+
+### 成本优化策略
+
+| 策略 | 说明 | 节省幅度 |
+|------|------|---------|
+| **用 mini 模型做初筛** | 覆盖度检查用 gpt-4o-mini，问题项再用大模型深检 | 70-80% |
+| **分段检查** | 每个章节独立检查，减少单次 token 用量 | 20-30% |
+| **只检查变更部分** | 增量更新时只检查修改的章节 | 40-60% |
+| **缓存检查结果** | 相同内容的检查结果复用 | 按重复率 |
