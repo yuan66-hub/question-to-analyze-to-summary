@@ -62,6 +62,7 @@
 | [vue3-reactivity-vs-alien-signals.md](/5.frontend/vue3-reactivity-vs-alien-signals.md)          | Vue 3 响应式系统与 Alien Signals 对比 |
 | [frontend-algorithm-scenes.md](./5.frontend/frontend-algorithm-scenes.md)                       | 前端算法应用场景详解                  |
 | [react-state-update.md](./5.frontend/react-state-update.md)                                     | React 状态更新后获取最新值的方案      |
+| [react-usecallback-usememo.md](./5.frontend/react-usecallback-usememo.md)                       | useCallback 与 useMemo 原理、场景、性能开销与常见错误 |
 
 ## 6. Node.js 与后端
 
