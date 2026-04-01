@@ -68,6 +68,7 @@
 | [react-state-update.md](./5.frontend/react-state-update.md)                                     | React 状态更新后获取最新值的方案      |
 | [react-usecallback-usememo.md](./5.frontend/react-usecallback-usememo.md)                       | useCallback 与 useMemo 原理、场景、性能开销与常见错误 |
 | [network-performance-optimization.md](./5.frontend/network-performance-optimization.md)         | 前端网络层面性能优化：协议升级、连接优化、缓存策略、资源加载控制 |
+| [nextjs-ssr-isr-guide.md](./5.frontend/nextjs-ssr-isr-guide.md)                                 | Next.js SSR 与 ISR 深度指南：渲染策略对比、On-demand ISR、revalidatePath/revalidateTag |
 
 ## 6. Node.js 与后端
 
