@@ -54,7 +54,11 @@
 
 | 文档                                                                                            | 说明                                  |
 | ----------------------------------------------------------------------------------------------- | ------------------------------------- |
-| [client-side-ai-webllm-applications.md](./5.frontend/client-side-ai-webllm-applications.md) | 端侧 AI 模型（WebLLM）前端应用场景    |
+| [react-principles.md](./5.frontend/react-principles.md)                                         | React 核心原理：Hooks、Fiber 架构、Scheduler 调度、Diff 算法、React 18 并发特性 |
+| [frontend-network-principles.md](./5.frontend/frontend-network-principles.md)                   | 前端网络原理：HTTP 协议、缓存机制、跨域、DNS、性能优化、网络 API |
+| [web-security-guide.md](./5.frontend/web-security-guide.md)                                     | Web 安全原理：XSS、CSRF、CSP、HTTPS、Cookie、CORS、JWT、原型链污染、供应链攻击 |
+| [frontend-engineering-guide.md](./5.frontend/frontend-engineering-guide.md)                     | 前端工程化原理：构建工具、Monorepo、模块联邦、CI/CD、错误监控、组件库、代码质量 |
+| [client-side-ai-webllm-applications.md](./5.frontend/client-side-ai-webllm-applications.md)    | 端侧 AI 模型（WebLLM）前端应用场景    |
 | [react-streaming-rendering-optimization.md](./5.frontend/react-streaming-rendering-optimization.md) | React 流式输出渲染优化                |
 | [react-context-vs-zustand.md](./5.frontend/react-context-vs-zustand.md)                         | React Context vs Zustand 深度对比     |
 | [react-state-update-debugging.md](./5.frontend/react-state-update-debugging.md)                 | React 重渲染定位与优化（Profiler、why-did-you-render、startTransition、Context 拆分） |
@@ -67,9 +71,10 @@
 
 ## 6. Node.js 与后端
 
-| 文档                                                                          | 说明                     |
-| ----------------------------------------------------------------------------- | ------------------------ |
-| [nodejs-memory-leak-debugging.md](./6.nodejs/nodejs-memory-leak-debugging.md) | Node.js 内存泄漏排查指南 |
+| 文档                                                                                    | 说明                                                        |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [nodejs-core-principles.md](./6.nodejs/nodejs-core-principles.md)                       | Node.js 核心原理：事件循环、模块系统、流、进程线程、V8 GC、HTTP、安全、性能监控 |
+| [nodejs-memory-leak-debugging.md](./6.nodejs/nodejs-memory-leak-debugging.md)           | Node.js 内存泄漏排查指南                                    |
 
 ## 7. LLM 应用
 
