@@ -69,6 +69,8 @@
 | [react-usecallback-usememo.md](./5.frontend/react-usecallback-usememo.md)                       | useCallback 与 useMemo 原理、场景、性能开销与常见错误 |
 | [network-performance-optimization.md](./5.frontend/network-performance-optimization.md)         | 前端网络层面性能优化：协议升级、连接优化、缓存策略、资源加载控制 |
 | [nextjs-ssr-isr-guide.md](./5.frontend/nextjs-ssr-isr-guide.md)                                 | Next.js SSR 与 ISR 深度指南：渲染策略对比、On-demand ISR、revalidatePath/revalidateTag |
+| [hls-low-latency-streaming.md](./5.frontend/hls-low-latency-streaming.md)                       | HLS 与 LL-HLS 低延迟流媒体：分片原理、Partial Segment、Blocking Reload、SRS 配置、延迟优化 |
+| [electron-principles.md](./5.frontend/electron-principles.md)                                   | Electron 核心原理：进程架构、IPC 通信、安全模型、性能优化、打包分发、Native 集成、自动更新 |
 
 ## 6. Node.js 与后端
 
