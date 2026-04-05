@@ -1,4 +1,4 @@
-# 浏览器事件循环与微任务机制
+# 浏览器事件循环：微任务机制与调度 API
 
 ## 核心模型
 
@@ -166,6 +166,116 @@ console.log('D');
 
 ---
 
-## 六、面试一句话总结
+## 六、requestAnimationFrame vs requestIdleCallback
 
-> 事件循环的本质是 **宏任务驱动、微任务保序**：每个宏任务执行完同步代码后，必须一次性清空所有微任务（包括执行过程中新产生的），保证逻辑原子性；然后浏览器决定是否渲染，再取下一个宏任务。
+两者都在宏任务和微任务体系之外，但**插入时机完全不同**：
+
+```
+宏任务 → 微任务清空 → 【rAF 回调】→ Style → Layout → Paint → Composite → 【rIC 回调】
+                       ↑ 渲染前                                          ↑ 渲染后有空闲时
+```
+
+### requestAnimationFrame（rAF）
+
+**时机**：下一次渲染**之前**，约 16.6ms 一次（跟随屏幕刷新率）
+
+**用途**：视觉相关的工作——动画、DOM 读写、样式变更
+
+```js
+function animate() {
+  element.style.transform = `translateX(${x++}px)`; // 保证每帧只更新一次
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+```
+
+**关键特性**：
+- 页面不可见时（切到后台标签页）自动暂停，节省资源
+- 一帧内多次调用 rAF，回调会**合并到同一帧**执行
+- 回调参数是高精度时间戳 `DOMHighResTimeStamp`
+
+### requestIdleCallback（rIC）
+
+**时机**：一帧渲染**完成后**，如果还有剩余时间才执行
+
+```
+  一帧 16.6ms
+  ├── 宏任务 + 微任务: 4ms
+  ├── rAF + 渲染: 6ms
+  ├── 空闲时间: 6.6ms ← rIC 在这里执行
+  └── 下一帧开始
+```
+
+**用途**：低优先级、不紧急的工作——数据上报、预加载、缓存计算
+
+```js
+requestIdleCallback((deadline) => {
+  // deadline.timeRemaining() 返回当前帧剩余毫秒数
+  while (deadline.timeRemaining() > 0 && tasks.length > 0) {
+    doTask(tasks.shift());
+  }
+  if (tasks.length > 0) {
+    requestIdleCallback(doMore); // 没做完，等下一次空闲
+  }
+}, { timeout: 2000 }); // 最多等 2s，超时强制执行
+```
+
+**关键特性**：
+- 回调提供 `deadline` 对象，可以判断剩余时间
+- **不保证执行**——如果主线程一直很忙，可能迟迟不调用
+- `timeout` 参数可以设置最大等待时间，防止饿死
+- **不应该在 rIC 中修改 DOM**——会触发强制回流，破坏已完成的渲染
+
+### 核心对比
+
+| | rAF | rIC |
+|---|---|---|
+| **执行时机** | 渲染前 | 渲染后空闲时 |
+| **频率** | 每帧必调（~60fps） | 不保证，有空闲才调 |
+| **适合做** | 动画、DOM 操作 | 数据上报、预计算 |
+| **能操作 DOM 吗** | 推荐 | 不推荐 |
+| **后台标签页** | 暂停 | 暂停 |
+| **回调参数** | timestamp | deadline 对象 |
+| **兼容性** | 全部主流浏览器 | Safari 不支持 |
+
+### 实际应用场景
+
+```js
+// rAF：平滑动画
+function smoothScroll() {
+  window.scrollBy(0, 2);
+  if (window.scrollY < target) {
+    requestAnimationFrame(smoothScroll);
+  }
+}
+
+// rIC：非关键数据上报
+requestIdleCallback(() => {
+  analytics.send(performanceData);
+});
+
+// React Scheduler 的启发：
+// rIC 频率太低（一秒约 20 次），React 自己用 MessageChannel 实现了 5ms 时间切片
+```
+
+### Safari 兼容方案
+
+Safari 不支持 `requestIdleCallback`，常用 polyfill：
+
+```js
+window.requestIdleCallback = window.requestIdleCallback || function (cb) {
+  const start = Date.now();
+  return setTimeout(() => {
+    cb({
+      didTimeout: false,
+      timeRemaining: () => Math.max(0, 50 - (Date.now() - start)),
+    });
+  }, 1);
+};
+```
+
+---
+
+## 七、面试一句话总结
+
+> 事件循环的本质是 **宏任务驱动、微任务保序**：每个宏任务执行完同步代码后，必须一次性清空所有微任务（包括执行过程中新产生的），保证逻辑原子性；然后浏览器决定是否渲染（rAF 在渲染前执行，rIC 在渲染后空闲时执行），再取下一个宏任务。
