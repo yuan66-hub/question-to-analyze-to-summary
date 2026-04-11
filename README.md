@@ -81,6 +81,13 @@
 | [webassembly-image-processing.md](./5.frontend/webassembly-image-processing.md)                 | WebAssembly 图像处理实战与应用场景 |
 | [timer-hijacking-simulation.md](./5.frontend/timer-hijacking-simulation.md)                     | 计时器劫持模拟：Fake Timers 原理与实现 |
 | [multi-file-preview-optimization.md](./5.frontend/multi-file-preview-optimization.md)           | 多文件预览性能优化：架构设计与渲染策略 |
+| [wasm-multi-video-concat-preview.md](./docs/wasm-multi-video-concat-preview.md)                 | WebAssembly 多视频拼接预览：时间轴映射、按需解码、无缝衔接与导出编码 |
+| [wasm-canvas-frame-processing.md](./docs/wasm-canvas-frame-processing.md)                       | WebAssembly SDK 在 Canvas 逐帧图片处理：帧提取、内存交互、SIMD 加速、多轨合成 |
+| [long-cache-implementation.md](./docs/long-cache-implementation.md)                             | 长缓存实现方案：HTTP 强缓存、协商缓存与资源指纹策略 |
+| [massive-image-loading-optimization.md](./docs/massive-image-loading-optimization.md)           | 大量图片同时加载优化：懒加载、预加载、压缩与渲染策略 |
+| [event-delegation-optimization.md](./docs/event-delegation-optimization.md)                     | 多按钮点击事件优化：事件委托原理与实践 |
+| [pagination-race-condition.md](./docs/pagination-race-condition.md)                             | 分页竞态问题（Race Condition）：成因分析与解决方案 |
+| [virtual-list-optimization.md](./docs/virtual-list-optimization.md)                             | 虚拟列表优化场景全景梳理 |
 
 ## 6. Node.js 与后端
 
