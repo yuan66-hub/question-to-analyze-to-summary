@@ -109,4 +109,4 @@
 | [harness-prompt-template-management.md](./7.llm/harness-prompt-template-management.md)               | Harness 工程与 Prompt 模板管理的结合                                          |
 | [application-layer-token-optimization.md](./7.llm/application-layer-token-optimization.md)           | 应用层大模型 Token 优化策略                                                   |
 | [tts-performance-optimization.md](./7.llm/tts-performance-optimization.md)                           | 文本转语音（TTS）性能优化策略                                                 |
-| [ai-one-click-video-production.md](./7.llm/ai-one-click-video-production.md)                         | AI 一键成片：多素材智能混剪全链路技术方案                                     |
+| [ai-one-click-video-production.md](./7.llm/ai-one-click-video-production.md)                         | AI 工作流引擎：多模态素材编排与自动化生产管线技术方案                         |
