@@ -121,5 +121,6 @@
 | [system-prompt-engineering-and-context-rot.md](./docs/system-prompt-engineering-and-context-rot.md) | System Prompt 工程化与 Context Rot 治理                                       |
 | [cache-explained-and-cost-control.md](./docs/cache-explained-and-cost-control.md)                   | KV Cache、Prompt Cache、Context Collapse 与成本控制                           |
 | [continual-learning-for-ai-agents.md](./docs/continual-learning-for-ai-agents.md)                   | AI Agent 持续学习的三层架构                                                   |
+| [agent-loop-three-fuses.md](./docs/agent-loop-three-fuses.md)                                       | Agent Loop 的三道保险丝：终止控制、失败学习与 Token 预算治理                  |
 | [harness-design-long-running-apps.md](./docs/harness-design-long-running-apps.md)                   | 长时运行应用开发的 Harness 设计                                               |
 | [harness-engineering-summary.md](./docs/harness-engineering-summary.md)                             | Harness Engineering 与工程师角色演变总结                                     |
