@@ -32,6 +32,7 @@
 | [knowledge-base-governance.md](./2.knowledge-retrieval/knowledge-base-governance.md)                 | 知识库治理                             |
 | [large-project-ai-comprehension.md](./2.knowledge-retrieval/large-project-ai-comprehension.md)       | 大型项目 AI 理解方案                   |
 | [rag-and-vector-database-comparison.md](./docs/rag-and-vector-database-comparison.md)               | RAG 架构方案与主流向量数据库能力对比   |
+| [llm-wiki-from-rag-to-knowledge-os.md](./docs/llm-wiki-from-rag-to-knowledge-os.md)                 | 从 RAG 到 Knowledge OS：LLM Wiki 工程化落地与知识治理 |
 
 ## 3. AI 代码生成与质量
 
@@ -83,6 +84,16 @@
 | [webassembly-image-processing.md](./5.frontend/webassembly-image-processing.md)                 | WebAssembly 图像处理实战与应用场景 |
 | [timer-hijacking-simulation.md](./5.frontend/timer-hijacking-simulation.md)                     | 计时器劫持模拟：Fake Timers 原理与实现 |
 | [multi-file-preview-optimization.md](./5.frontend/multi-file-preview-optimization.md)           | 多文件预览性能优化：架构设计与渲染策略 |
+| [pod-editor-2d-to-3d-preview.md](./5.frontend/pod-editor-2d-to-3d-preview.md)                   | POD 编辑器从 2D 画布到 3D 模型预览：纹理导出、UV 映射与实时渲染 |
+| [ai-video-to-vmd-feasibility-plan.md](./5.frontend/ai-video-to-vmd-feasibility-plan.md)         | AI 生成 VMD：真人舞蹈视频复刻到 MMD 模型的可行性方案 |
+| [defer-white-screen-optimization.md](./5.frontend/defer-white-screen-optimization.md)           | 使用 defer 优化白屏时间：脚本加载与首屏渲染链路分析 |
+| [on-device-ai-semantic-segmentation.md](./5.frontend/on-device-ai-semantic-segmentation.md)     | 端侧 AI 语义分割：推理引擎、调度、性能优化与内存管理 |
+| [backpressure-large-data-list.md](./5.frontend/backpressure-large-data-list.md)                 | 大数据列表背压策略：流式传输、分批消费与内存控制 |
+| [garment-segmented-canvas-to-3d-mapping.md](./5.frontend/garment-segmented-canvas-to-3d-mapping.md) | 服装分片画布到 3D 模型映射：多区域编辑与多纹理绑定 |
+| [frontend-design-patterns.md](./5.frontend/frontend-design-patterns.md)                         | 前端常用设计模式：创建型、结构型、行为型与实战示例 |
+| [plugin-system-architecture.md](./5.frontend/plugin-system-architecture.md)                     | 插件系统架构：微内核、事件驱动、中间件链与扩展机制 |
+| [print-pattern-extraction.md](./5.frontend/print-pattern-extraction.md)                         | 印花提取：AI 抠图、色彩分离、矢量化与导出流程 |
+| [ai-image-annotation-processing-solution.md](./5.frontend/ai-image-annotation-processing-solution.md) | AI 图像标注与处理端侧工程：推理、GPU/WASM 加速、调度与性能优化 |
 | [video-mixing-rules-and-technical-design.md](./docs/video-mixing-rules-and-technical-design.md) | 视频混剪规则、组合算法与 Pipeline 设计 |
 | [wasm-multi-video-concat-preview.md](./docs/wasm-multi-video-concat-preview.md)                 | WebAssembly 多视频拼接预览：时间轴映射、按需解码、无缝衔接与导出编码 |
 | [wasm-canvas-frame-processing.md](./docs/wasm-canvas-frame-processing.md)                       | WebAssembly SDK 在 Canvas 逐帧图片处理：帧提取、内存交互、SIMD 加速、多轨合成 |
@@ -92,6 +103,8 @@
 | [pagination-race-condition.md](./docs/pagination-race-condition.md)                             | 分页竞态问题（Race Condition）：成因分析与解决方案 |
 | [virtual-list-optimization.md](./docs/virtual-list-optimization.md)                             | 虚拟列表优化场景全景梳理 |
 | [nextjs-opentelemetry-aliyun-ssr-memory-leak-design.md](./docs/nextjs-opentelemetry-aliyun-ssr-memory-leak-design.md) | Next.js SSR 可观测性接入与 Node 内存泄漏治理 |
+| [transform-offset-canvas-solution.md](./docs/transform-offset-canvas-solution.md)               | 画布 transform 偏移问题：多坐标系统一与拖拽命中修正 |
+| [zpl-image-canvas-dual-rendering-architecture.md](./docs/zpl-image-canvas-dual-rendering-architecture.md) | ZPL-Image + Canvas 双渲染：编辑态与打印态分离架构 |
 
 ## 6. Node.js 与后端
 
@@ -114,6 +127,8 @@
 | [application-layer-token-optimization.md](./7.llm/application-layer-token-optimization.md)           | 应用层大模型 Token 优化策略                                                   |
 | [tts-performance-optimization.md](./7.llm/tts-performance-optimization.md)                           | 文本转语音（TTS）性能优化策略                                                 |
 | [ai-one-click-video-production.md](./7.llm/ai-one-click-video-production.md)                         | AI 工作流引擎：多模态素材编排与自动化生产管线技术方案                         |
+| [skills-based-model-distillation.md](./7.llm/skills-based-model-distillation.md)                   | Skills 蒸馏模型：基于 Prompt-time 的知识蒸馏策略                               |
+| [ffmpeg-video-compose-subtitle-audio-pipeline.md](./7.llm/ffmpeg-video-compose-subtitle-audio-pipeline.md) | 多视频合成、字幕生成与音频添加的 FFmpeg 流水线设计                             |
 | [ai-capability-overhang.md](./docs/ai-capability-overhang.md)                                       | AI 能力过剩与企业落地瓶颈、Context Gap 分析                                   |
 | [ai-production-permission-system-four-layer-defense.md](./docs/ai-production-permission-system-four-layer-defense.md) | AI 生产级权限系统的四层防线设计                                               |
 | [context-management-system-practical-guide.md](./docs/context-management-system-practical-guide.md) | 上下文管理系统实战：选择、排序、预算、压缩与装配                              |
