@@ -74,6 +74,7 @@
 | [network-performance-optimization.md](./5.frontend/network-performance-optimization.md)         | 前端网络层面性能优化：协议升级、连接优化、缓存策略、资源加载控制 |
 | [nextjs-ssr-isr-guide.md](./5.frontend/nextjs-ssr-isr-guide.md)                                 | Next.js SSR 与 ISR 深度指南：渲染策略对比、On-demand ISR、revalidatePath/revalidateTag |
 | [hls-low-latency-streaming.md](./5.frontend/hls-low-latency-streaming.md)                       | HLS 与 LL-HLS 低延迟流媒体：分片原理、Partial Segment、Blocking Reload、SRS 配置、延迟优化 |
+| [webrtc-playback-link-optimization.md](./5.frontend/webrtc-playback-link-optimization.md)       | WebRTC 播放链路优化架构方案：SFU、Simulcast、jitter buffer、可观测性与监控系统场景 |
 | [electron-principles.md](./5.frontend/electron-principles.md)                                   | Electron 核心原理：进程架构、IPC 通信、安全模型、性能优化、打包分发、Native 集成、自动更新 |
 | [pnpm-monorepo-permission-submodule.md](./5.frontend/pnpm-monorepo-permission-submodule.md)     | pnpm Monorepo 按权限拉取子包完整落地示例 |
 | [webassembly-video-editor-sdk.md](./5.frontend/webassembly-video-editor-sdk.md)                 | WebAssembly 视频编辑器 SDK 架构设计 |
