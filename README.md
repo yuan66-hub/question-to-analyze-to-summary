@@ -21,6 +21,7 @@
 | [multi-agent-conflict-arbitration.md](./1.multi-agent/multi-agent-conflict-arbitration.md) | Agent 冲突仲裁与解决                           |
 | [openclaw-memory-implementation.md](./1.multi-agent/openclaw-memory-implementation.md)     | OpenClaw Memory 实现方案                       |
 | [claude-code-source-analysis.md](./1.multi-agent/claude-code-source-analysis.md)           | Claude Code 源码架构深度分析                   |
+| [agent-cluster-design-and-deployment.md](./1.multi-agent/agent-cluster-design-and-deployment.md) | Agent 集群设计与部署：架构、调度、伸缩、容错、成本与优缺点 |
 
 ## 2. 知识检索与 RAG
 
@@ -45,6 +46,7 @@
 | [ai-content-production-denoising.md](./3.ai-codegen/ai-content-production-denoising.md)         | AI 辅助内容生产去噪规范  |
 | [ui-deviation-detection.md](./3.ai-codegen/ui-deviation-detection.md)                           | UI 偏差检测              |
 | [claude-code-skills-best-practices.md](./docs/claude-code-skills-best-practices.md)             | Claude Code Skills 设计原则、分类与最佳实践 |
+| [bug-ticket-triage-to-solution-skill-vs-mcp.md](./3.ai-codegen/bug-ticket-triage-to-solution-skill-vs-mcp.md) | 测试 Bug 单自动分诊到解决方案：拉单/清洗/截图标注抽取/分类/codegraph 定位，Skill vs MCP 混合方案 |
 
 ## 4. 需求追踪与任务分解
 
@@ -123,6 +125,7 @@
 | [llm-spelling-correction.md](./7.llm/llm-spelling-correction.md)                                     | LLM 拼写纠正                                                                  |
 | [ai-native-applications.md](./7.llm/ai-native-applications.md)                                       | AI 原生应用：定义、判断标准、典型架构与案例拆解                               |
 | [ai-observability-agent-gateway-governance.md](./7.llm/ai-observability-agent-gateway-governance.md) | AI 服务网关治理、日志追踪、Agent 状态轨迹与用户行为复现的完整手册             |
+| [ai-gateway-metering-billing-design.md](./7.llm/ai-gateway-metering-billing-design.md) | AI 网关统一计量与计费系统设计：多维用量模型、可插拔计价策略、账本与数据流转   |
 | [vertical-llm-training-douyin-agent.md](./7.llm/vertical-llm-training-douyin-agent.md)               | 垂直领域大模型训练：以手机抖音视频发布 Agent 为例                             |
 | [harness-prompt-template-management.md](./7.llm/harness-prompt-template-management.md)               | Harness 工程与 Prompt 模板管理的结合                                          |
 | [application-layer-token-optimization.md](./7.llm/application-layer-token-optimization.md)           | 应用层大模型 Token 优化策略                                                   |
