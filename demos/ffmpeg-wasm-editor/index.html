@@ -170,6 +170,9 @@
     import { fetchFile, toBlobURL } from "https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js";
 
     const CORE_BASE = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+    // classWorkerURL 的相对地址会相对 FFmpeg 的远程 import.meta.url 解析，
+    // 因此这里必须传入当前静态服务器上的绝对地址。
+    const CLASS_WORKER_URL = new URL("./ffmpeg-worker.js", window.location.href).href;
 
     // ---------- DOM ----------
     const $ = (id) => document.getElementById(id);
@@ -328,12 +331,13 @@
         await ffmpeg.load({
           coreURL: await toBlobURL(`${CORE_BASE}/ffmpeg-core.js`, "text/javascript"),
           wasmURL: await toBlobURL(`${CORE_BASE}/ffmpeg-core.wasm`, "application/wasm"),
+          classWorkerURL: CLASS_WORKER_URL,
         });
         setStatus("内核已就绪，可以导出", "ok");
         loadBtn.textContent = "✓ 内核已加载";
         exportBtn.disabled = !(state.loaded.A && state.loaded.B);
       } catch (e) {
-        setStatus("内核加载失败：" + e.message + "（需通过 http 服务打开，见 README）", "err");
+        setStatus("内核加载失败：" + e.message, "err");
         loadBtn.disabled = false;
       }
     });

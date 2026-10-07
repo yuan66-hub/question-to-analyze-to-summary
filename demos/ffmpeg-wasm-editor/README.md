@@ -17,7 +17,7 @@
 
 ## 运行方式
 
-浏览器的 ES Module + 跨域内核加载**必须通过 http(s) 打开**，不能直接双击 `index.html`（`file://` 会报 CORS）。
+浏览器的 ES Module + 跨域内核加载**必须通过 http(s) 打开**，不能直接双击 `index.html`（`file://` 会报 CORS）。页面还会从同源加载 `ffmpeg-worker.js`，因此启动服务时请保留它与 `index.html` 在同一目录。
 
 在本目录下起一个静态服务器，任选其一：
 

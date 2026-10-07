@@ -9,6 +9,7 @@
 - [5. 前端开发](#5-前端开发)
 - [6. Node.js 与后端](#6-nodejs-与后端)
 - [7. LLM 应用](#7-llm-应用)
+- [8. 音视频](#8-音视频)
 
 ---
 
@@ -19,6 +20,7 @@
 | [multi-agent-task-orchestration.md](./1.multi-agent/multi-agent-task-orchestration.md)           | Multi-Agent 任务编排指南，分解复杂问题并行分发             |
 | [multi-agent-state-passing.md](./1.multi-agent/multi-agent-state-passing.md)                     | Agent 间状态传递机制                                       |
 | [multi-agent-conflict-arbitration.md](./1.multi-agent/multi-agent-conflict-arbitration.md)       | Agent 冲突仲裁与解决                                       |
+| [multi-agent-topological-sorting.md](./1.multi-agent/multi-agent-topological-sorting.md)         | Multi-Agent DAG 编排平台：拓扑调度架构设计                  |
 | [openclaw-memory-implementation.md](./1.multi-agent/openclaw-memory-implementation.md)           | OpenClaw Memory 实现方案                                   |
 | [claude-code-source-analysis.md](./1.multi-agent/claude-code-source-analysis.md)                 | Claude Code 源码架构深度分析                               |
 | [agent-cluster-design-and-deployment.md](./1.multi-agent/agent-cluster-design-and-deployment.md) | Agent 集群设计与部署：架构、调度、伸缩、容错、成本与优缺点 |
@@ -144,3 +146,10 @@
 | [agent-loop-three-fuses.md](./docs/agent-loop-three-fuses.md)                                                         | Agent Loop 的三道保险丝：终止控制、失败学习与 Token 预算治理                  |
 | [harness-design-long-running-apps.md](./docs/harness-design-long-running-apps.md)                                     | 长时运行应用开发的 Harness 设计                                               |
 | [harness-engineering-summary.md](./docs/harness-engineering-summary.md)                                               | Harness Engineering 与工程师角色演变总结                                      |
+
+## 8. 音视频
+
+| 文档                                                                                               | 说明                                                                                     |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [encrypted-media-player-implementation.md](./8.audio-video/encrypted-media-player-implementation.md) | 音视频加密播放器完整落地方案：AES 分片、CENC/DRM、KMS、License、多端播放器与数据流转 |
+| [ai-video-frame-repair-architecture.md](./8.audio-video/ai-video-frame-repair-architecture.md) | AI 视频抽卡补帧：局部修复、候选生成、模型接入与成本控制架构设计 |
